@@ -165,6 +165,9 @@ public class TestExample {
 	
 	    // Check the total amount
         assertEquals(0, getTotalCost(), 0.01);
+
+        //Check the view
+        assertEquals(0, view.getTransactionsTable().size());
     }
 
 }
