@@ -2,6 +2,7 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Date;
 import java.util.List;
@@ -113,4 +114,54 @@ public class TestExample {
         assertEquals(0.00, totalCost, 0.01);
     }
     
+    @Test
+    public void addTransactionTest() {
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+    
+        // Perform the action: Add a transaction
+	    double amount = 50.0;
+	    String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+    
+        // Post-condition: List of transactions contains only
+	    //                 the added transaction	
+        assertEquals(1, model.getTransactions().size());
+    
+        // Check the contents of the list
+	    Transaction firstTransaction = model.getTransactions().get(0);
+	    checkTransaction(amount, category, firstTransaction);
+	
+	// Check the total amount
+        assertEquals(amount, getTotalCost(), 0.01);
+    }
+
+    @Test
+    public void invalidInputTest() {
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+    
+        // Try to add transaction with invalid amount
+	    double amount = -50.0;
+	    String category = "food";
+        assertFalse(controller.addTransaction(amount, category));
+    
+        // Try to add transaction with invalid category
+	    amount = 50.0;
+	    category = "invalid";        
+        assertFalse(controller.addTransaction(amount, category));
+
+        //try to add transaction with invalid amount and category
+        amount = -50.0;
+        category = "invalid";
+        assertFalse(controller.addTransaction(amount, category));
+
+        // Post-condition: List of transactions contains nothing          	
+        assertEquals(0, model.getTransactions().size());
+    
+	
+	    // Check the total amount
+        assertEquals(0, getTotalCost(), 0.01);
+    }
+
 }
