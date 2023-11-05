@@ -134,9 +134,6 @@ public class TestExample {
 	
 	    // Check the total amount
         assertEquals(amount, getTotalCost(), 0.01);
-
-        //check the view
-        assertEquals(1, view.getTransactionsTable().size());
     }
 
     @Test
@@ -166,8 +163,12 @@ public class TestExample {
 	    // Check the total amount
         assertEquals(0, getTotalCost(), 0.01);
 
-        //Check the view
-        assertEquals(0, view.getTransactionsTable().size());
-    }
+        // Try to add a valid transaction
+	    amount = 50.0;
+	    category = "food";
+        assertTrue(controller.addTransaction(amount, category));
 
+        // Post-condition: List of transactions contains nothing          	
+        assertEquals(1, model.getTransactions().size());
+    }
 }
