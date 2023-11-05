@@ -14,6 +14,8 @@ import org.junit.Test;
 import controller.ExpenseTrackerController;
 import model.ExpenseTrackerModel;
 import model.Transaction;
+import model.Filter.AmountFilter;
+import model.Filter.CategoryFilter;
 import view.ExpenseTrackerView;
 
 
@@ -170,5 +172,42 @@ public class TestExample {
 
         // Post-condition: List of transactions contains nothing          	
         assertEquals(1, model.getTransactions().size());
+    }
+    @Test
+    public void filterByAmountTest(){
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+    
+        // Add transactions
+        controller.addTransaction(50, "food");
+        controller.addTransaction(50, "travel");
+        controller.addTransaction(50, "other");            
+        controller.addTransaction(7, "food");
+        controller.addTransaction(2, "travel");
+        controller.addTransaction(5, "other"); 
+
+        // Post-condition: List of transactions contains 
+        //                 the added transaction	
+        assertEquals(6, model.getTransactions().size());
+
+        //set the amountFilter
+        AmountFilter amountFilter = new AmountFilter(50.0);
+        controller.setFilter(amountFilter);
+        
+        //apply the filter
+        controller.applyFilter();
+
+        System.out.println(view.getTableModel());
+        int numRows = view.getTableModel().getRowCount();
+        int numCols = view.getTableModel().getColumnCount();
+        
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                Object value = view.getTableModel().getValueAt(row, col);
+                System.out.print(value + "\t"); // Print the value and a tab separator
+            }
+            System.out.println(); // Move to the next line for the next row
+        }
+        //TODO CHECK THE VIEW TO SEE IF IT'S HIGHLIGHTED
     }
 }
