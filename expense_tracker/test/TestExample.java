@@ -132,8 +132,11 @@ public class TestExample {
 	    Transaction firstTransaction = model.getTransactions().get(0);
 	    checkTransaction(amount, category, firstTransaction);
 	
-	// Check the total amount
+	    // Check the total amount
         assertEquals(amount, getTotalCost(), 0.01);
+
+        //check the view
+        assertEquals(1, view.getTransactionsTable().size());
     }
 
     @Test
