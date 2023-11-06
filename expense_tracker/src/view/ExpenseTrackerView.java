@@ -27,6 +27,9 @@ public class ExpenseTrackerView extends JFrame {
   private JTextField amountFilterField;
   private JButton amountFilterBtn;
 
+  // undo field for undo functionality
+  private JTextField undoField;
+  private JButton undoBtn;
   
 
   public ExpenseTrackerView() {
@@ -62,7 +65,10 @@ public class ExpenseTrackerView extends JFrame {
     amountFilterField = new JTextField(10);
     amountFilterBtn = new JButton("Filter by Amount");
   
-
+    // undo filter for undo functionality
+    JLabel undoFilterLabel = new JLabel("Undo Row Number:");
+    undoField = new JTextField(10);
+    undoBtn = new JButton("Undo");
   
     // Layout components
     JPanel inputPanel = new JPanel();
@@ -75,6 +81,7 @@ public class ExpenseTrackerView extends JFrame {
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(amountFilterBtn);
     buttonPanel.add(categoryFilterBtn);
+    buttonPanel.add(undoBtn); // add undo button onto panel
   
     // Add panels to frame
     add(inputPanel, BorderLayout.NORTH);
@@ -144,6 +151,21 @@ public class ExpenseTrackerView extends JFrame {
     }
   }
 
+  // listener to undo button for undo functionality
+  public void addUndoListener(ActionListener listener) {
+	  undoBtn.addActionListener(listener);
+  }
+  
+  // obtain input entered through undo field to process undo functionality
+  public int getUndoInput() {
+    String input = JOptionPane.showInputDialog(this, "Enter Undo Row:");
+    try {
+        return Integer.parseInt(input);
+    } catch (NumberFormatException e) {
+        return -1; // Default value (or any other appropriate value)
+    }
+  }
+  
   public void refreshTable(List<Transaction> transactions) {
       // Clear existing rows
       model.setRowCount(0);

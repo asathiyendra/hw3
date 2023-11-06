@@ -1,6 +1,9 @@
+import java.util.List;
+
 import javax.swing.JOptionPane;
 import controller.ExpenseTrackerController;
 import model.ExpenseTrackerModel;
+import model.Transaction;
 import view.ExpenseTrackerView;
 import model.Filter.AmountFilter;
 import model.Filter.CategoryFilter;
@@ -68,6 +71,21 @@ public class ExpenseTrackerApp {
     view.toFront();
    }});
     
-
+    // handle user pressing undo button and entering input
+    view.addUndoListener(e -> {
+        try{
+        int undoInput = view.getUndoInput();
+        List<Transaction> transactions = model.getTransactions();
+        // if given row actually exists, then remove that row
+        if (undoInput > 0 && transactions.size() >= undoInput) {
+        	controller.removeTransaction(undoInput-1);
+        } else {
+            JOptionPane.showMessageDialog(view, "Can't Remove, Row Not Listed");
+            view.toFront();
+        }
+      }catch(IllegalArgumentException exception) {
+      JOptionPane.showMessageDialog(view,exception.getMessage());
+      view.toFront();
+     }});
   }
 }

@@ -1,4 +1,4 @@
-package controller;
+ package controller;
 
 import view.ExpenseTrackerView;
 
@@ -50,6 +50,18 @@ public class ExpenseTrackerController {
     view.getTableModel().addRow(new Object[]{t.getAmount(), t.getCategory(), t.getTimestamp()});
     refresh();
     return true;
+  }
+  
+  // method to remove a transaction for undo functionality
+  public boolean removeTransaction(int row) {
+	  // find transaction at given row and remove it
+	  List<Transaction> transactions = model.getTransactions();
+	  Transaction t = transactions.get(row);
+	  model.removeTransaction(t);
+	  // refresh table with undo row removed
+	  refresh();
+	  
+      return true;
   }
 
   public void applyFilter() {
