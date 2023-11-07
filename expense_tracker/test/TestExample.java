@@ -210,4 +210,44 @@ public class TestExample {
         }
         //TODO CHECK THE VIEW TO SEE IF IT'S HIGHLIGHTED
     }
+    
+    @Test
+    public void undoDisallowedTest() {
+        // Pre-condition: List of transactions is empty
+    	List<Transaction> transactions = model.getTransactions();
+        assertEquals(0, model.getTransactions().size());
+        // Testing removing transactions when empty
+        assertFalse(controller.undoTransaction(0));
+        assertFalse(controller.undoTransaction(1));
+        assertFalse(controller.undoTransaction(2));
+        // Post-condition: List of transactions remain the same (empty)
+        assertEquals(transactions, model.getTransactions());
+    }
+    
+    @Test
+    public void undoAllowedTest() {
+        // Pre-condition: List of transactions is empty
+    	List<Transaction> transactions = model.getTransactions();
+        assertEquals(0, model.getTransactions().size());
+        // Adding Transaction
+        assertTrue(controller.addTransaction(123.0, "Food"));
+        // Checking if Transaction is in List
+        assertEquals(1, model.getTransactions().size());
+        // Finding Total Cost of Transactions
+        double totalCost = 0.0;
+        for(Transaction t : model.getTransactions()) {
+          totalCost += t.getAmount();
+        }
+        // Testing that removing transaction works correctly
+        assertTrue(controller.undoTransaction(0));
+        // Finding Total Cost After Undoing a Row
+        double newTotalCost = 0.0;
+        for (Transaction t :  model.getTransactions()) {
+        	newTotalCost += t.getAmount();
+        }
+        // Post-condition: Total cost is different after undoing
+        // List is back to empty after its one element is removed
+        assertFalse(totalCost == newTotalCost);
+        assertEquals(0, model.getTransactions().size());
+    }
 }

@@ -53,9 +53,13 @@ public class ExpenseTrackerController {
   }
   
   // method to remove a transaction for undo functionality
-  public boolean removeTransaction(int row) {
+  public boolean undoTransaction(int row) {
 	  // find transaction at given row and remove it
 	  List<Transaction> transactions = model.getTransactions();
+	  // Making sure corresponding row is in transactions list
+	  if (row < 0 || row >= transactions.size()) {
+		  return false;
+	  }
 	  Transaction t = transactions.get(row);
 	  model.removeTransaction(t);
 	  // refresh table with undo row removed
