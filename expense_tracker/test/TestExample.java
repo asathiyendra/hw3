@@ -227,7 +227,6 @@ public class TestExample {
     @Test
     public void undoAllowedTest() {
         // Pre-condition: List of transactions is empty
-    	List<Transaction> transactions = model.getTransactions();
         assertEquals(0, model.getTransactions().size());
         // Adding Transaction
         assertTrue(controller.addTransaction(123.0, "Food"));
