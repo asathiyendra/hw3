@@ -197,18 +197,42 @@ public class TestExample {
         //apply the filter
         controller.applyFilter();
 
-        System.out.println(view.getTableModel());
-        int numRows = view.getTableModel().getRowCount();
-        int numCols = view.getTableModel().getColumnCount();
+        // Post-condition: First 3 transactions contains amount 50.0
+       for (int row = 0; row < 3; row++) {
+            Object value = view.getTableModel().getValueAt(row, 1);
+            assertEquals(50.0, value);
+       }
+    }
+
+    @Test
+    public void filterByCategoryTest(){
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+    
+        // Add transactions
+        controller.addTransaction(5, "food");
+        controller.addTransaction(40, "food");
+        controller.addTransaction(58, "food");            
+        controller.addTransaction(7, "food");
+        controller.addTransaction(2, "travel");
+        controller.addTransaction(5, "other"); 
+
+        // Post-condition: List of transactions contains 
+        //                 the added transaction	
+        assertEquals(6, model.getTransactions().size());
+
+        //set the categoryFilter
+        CategoryFilter categoryFilter = new CategoryFilter("food");
+        controller.setFilter(categoryFilter);
         
-        for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols; col++) {
-                Object value = view.getTableModel().getValueAt(row, col);
-                System.out.print(value + "\t"); // Print the value and a tab separator
-            }
-            System.out.println(); // Move to the next line for the next row
-        }
-        //TODO CHECK THE VIEW TO SEE IF IT'S HIGHLIGHTED
+        //apply the filter
+        controller.applyFilter();
+
+        // Post-condition: First 4 transactions contains amount 50.0
+       for (int row = 0; row < 3; row++) {
+            Object value = view.getTableModel().getValueAt(row, 2);
+            assertEquals("food", value);
+       }
     }
     
     @Test
