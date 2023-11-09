@@ -18,6 +18,8 @@ import model.Filter.AmountFilter;
 import model.Filter.CategoryFilter;
 import view.ExpenseTrackerView;
 
+import javax.swing.AbstractButton;
+import javax.swing.JOptionPane;
 
 public class TestExample {
   
@@ -43,7 +45,7 @@ public class TestExample {
 
 
     public void checkTransaction(double amount, String category, Transaction transaction) {
-	assertEquals(amount, transaction.getAmount(), 0.01);
+    	assertEquals(amount, transaction.getAmount(), 0.01);
         assertEquals(category, transaction.getCategory());
         String transactionDateString = transaction.getTimestamp();
         Date transactionDate = null;
@@ -68,19 +70,19 @@ public class TestExample {
         assertEquals(0, model.getTransactions().size());
     
         // Perform the action: Add a transaction
-	double amount = 50.0;
-	String category = "food";
+		double amount = 50.0;
+		String category = "food";
         assertTrue(controller.addTransaction(amount, category));
     
         // Post-condition: List of transactions contains only
-	//                 the added transaction	
+        //                 the added transaction	
         assertEquals(1, model.getTransactions().size());
     
         // Check the contents of the list
-	Transaction firstTransaction = model.getTransactions().get(0);
-	checkTransaction(amount, category, firstTransaction);
+        Transaction firstTransaction = model.getTransactions().get(0);
+        checkTransaction(amount, category, firstTransaction);
 	
-	// Check the total amount
+        // Check the total amount
         assertEquals(amount, getTotalCost(), 0.01);
     }
 
@@ -91,20 +93,20 @@ public class TestExample {
         assertEquals(0, model.getTransactions().size());
     
         // Perform the action: Add and remove a transaction
-	double amount = 50.0;
-	String category = "food";
+        double amount = 50.0;
+        String category = "food";
         Transaction addedTransaction = new Transaction(amount, category);
         model.addTransaction(addedTransaction);
     
         // Pre-condition: List of transactions contains only
-	//                the added transaction
+        //                the added transaction
         assertEquals(1, model.getTransactions().size());
-	Transaction firstTransaction = model.getTransactions().get(0);
-	checkTransaction(amount, category, firstTransaction);
+        Transaction firstTransaction = model.getTransactions().get(0);
+        checkTransaction(amount, category, firstTransaction);
 
-	assertEquals(amount, getTotalCost(), 0.01);
+        assertEquals(amount, getTotalCost(), 0.01);
 	
-	// Perform the action: Remove the transaction
+        // Perform the action: Remove the transaction
         model.removeTransaction(addedTransaction);
     
         // Post-condition: List of transactions is empty
@@ -241,9 +243,17 @@ public class TestExample {
     	List<Transaction> transactions = model.getTransactions();
         assertEquals(0, model.getTransactions().size());
         // Testing removing transactions when empty
-        assertFalse(controller.undoTransaction(0));
-        assertFalse(controller.undoTransaction(1));
-        assertFalse(controller.undoTransaction(2));
+        // False means nothing was removed due to not valid input value
+        view.addUndoListener(e -> {
+        	// negative row is invalid, does not remove
+            assertFalse(controller.undoTransaction(-1));
+            // first element (row one) when empty is invalid to remove
+            assertFalse(controller.undoTransaction(0));
+            // second element (row two) when empty is invalid to remove
+            assertFalse(controller.undoTransaction(1));
+        });
+        // pressing undo button
+        view.getUndoBtn().doClick();       
         // Post-condition: List of transactions remain the same (empty)
         assertEquals(transactions, model.getTransactions());
     }
@@ -253,24 +263,26 @@ public class TestExample {
         // Pre-condition: List of transactions is empty
         assertEquals(0, model.getTransactions().size());
         // Adding Transaction
-        assertTrue(controller.addTransaction(123.0, "Food"));
+        double addingCost = 123.0;
+        String addingCategory = "Food";
+        assertTrue(controller.addTransaction(addingCost, addingCategory));
         // Checking if Transaction is in List
         assertEquals(1, model.getTransactions().size());
         // Finding Total Cost of Transactions
-        double totalCost = 0.0;
-        for(Transaction t : model.getTransactions()) {
-          totalCost += t.getAmount();
-        }
+        double totalCost = getTotalCost();
         // Testing that removing transaction works correctly
-        assertTrue(controller.undoTransaction(0));
+        // undoTransaction returns true if successfully removes transaction
+        view.addUndoListener(e -> {
+            assertTrue(controller.undoTransaction(0));
+        });
+        // pressing undo button
+        view.getUndoBtn().doClick();
         // Finding Total Cost After Undoing a Row
-        double newTotalCost = 0.0;
-        for (Transaction t :  model.getTransactions()) {
-        	newTotalCost += t.getAmount();
-        }
+        double newTotalCost = getTotalCost();
         // Post-condition: Total cost is different after undoing
-        // List is back to empty after its one element is removed
-        assertFalse(totalCost == newTotalCost);
+        assertEquals(totalCost-addingCost, newTotalCost, 0.01);
+        // Table is back to empty after its one element is removed
+        view.refreshTable(model.getTransactions());
         assertEquals(0, model.getTransactions().size());
     }
 }

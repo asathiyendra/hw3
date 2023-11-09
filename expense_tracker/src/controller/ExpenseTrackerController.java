@@ -59,7 +59,7 @@ public class ExpenseTrackerController {
 	  // Making sure corresponding row is in transactions list
 	  if (row < 0 || row >= transactions.size()) {
 		  return false;
-	  }
+		}
 	  Transaction t = transactions.get(row);
 	  model.removeTransaction(t);
 	  // refresh table with undo row removed

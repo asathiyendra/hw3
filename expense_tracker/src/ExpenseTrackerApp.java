@@ -75,9 +75,8 @@ public class ExpenseTrackerApp {
     view.addUndoListener(e -> {
         try{
         int undoInput = view.getUndoInput();
-        List<Transaction> transactions = model.getTransactions();
         // if given row actually exists, then remove that row
-        if (undoInput > 0 && transactions.size() >= undoInput) {
+        if (undoInput > 0 && model.getTransactions().size() >= undoInput) {
         	controller.undoTransaction(undoInput-1);
         } else {
             JOptionPane.showMessageDialog(view, "Can't Remove, Row Not Listed");
